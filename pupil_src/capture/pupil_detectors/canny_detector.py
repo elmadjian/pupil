@@ -104,6 +104,7 @@ class Canny_Detector(Pupil_Detector):
         def early_exit():
             return {'norm_pos':(0,0),'diameter':0,'timestamp':frame.timestamp,'confidence':0}
 
+        #img = cv2.resize(frame.img, (160,120))
         u_r = user_roi
         if self.window_should_open:
             self.open_window((frame.img.shape[1],frame.img.shape[0]))
@@ -112,7 +113,6 @@ class Canny_Detector(Pupil_Detector):
 
         if self._window:
             debug_img = np.zeros(frame.img.shape,frame.img.dtype)
-
 
         #get the user_roi
         gray_img = frame.gray[u_r.view]
@@ -285,7 +285,7 @@ class Canny_Detector(Pupil_Detector):
 
 
         # from edges to contours
-        contours, hierarchy = cv2.findContours(edges,
+        dst, contours, hierarchy = cv2.findContours(edges,
                                             mode=cv2.RETR_LIST,
                                             method=cv2.CHAIN_APPROX_NONE,offset=(0,0)) #TC89_KCOS
         # contours is a list containing array([[[108, 290]],[[111, 290]]], dtype=int32) shape=(number of points,1,dimension(2) )

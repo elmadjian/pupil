@@ -52,6 +52,8 @@ from pupil_server import Pupil_Server
 from pupil_remote import Pupil_Remote
 from marker_detector import Marker_Detector
 
+import cv2
+
 #manage plugins
 user_launchable_plugins = [Show_Calibration,Pupil_Server,Pupil_Remote,Marker_Detector]
 system_plugins  = [Display_Recent_Gaze,Recorder]
@@ -136,8 +138,9 @@ def world(g_pool,cap_src,cap_size):
     # Initialize capture
     cap = autoCreateCapture(cap_src, timebase=g_pool.timebase)
     cap.frame_size = cap_size
-    cap.frame_rate = 24 #default
+    cap.frame_rate = 30 #default
     cap.settings = session_settings.get('capture_settings',{})
+
     # Test capture
     try:
         frame = cap.get_frame()
@@ -294,8 +297,6 @@ def world(g_pool,cap_src,cap_size):
         except ZeroDivisionError:
             pass
         cpu_graph.update()
-
-
 
         #a dictionary that allows plugins to post and read events
         events = {}

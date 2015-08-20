@@ -93,7 +93,7 @@ def main():
 
     # To assign camera by name: put string(s) in list
     eye_cam_names = ["USB 2.0 Camera","Microsoft", "6000","Integrated Camera","HD USB Camera"]
-    world_src = ["Logitech Camera","(046d:081d)","C510","B525", "C525","C615","C920","C930e"]
+    world_src = ["Logitech Camera","(046d:0843)","C510","B525", "C525","C615","C920","C930e"]
     eye_src = (eye_cam_names,0),(eye_cam_names,1) #first match for eye0 and second match for eye1
 
     # to assign cameras directly, using integers as demonstrated below
@@ -106,6 +106,8 @@ def main():
     # world_src = "/Users/mkassner/Downloads/000/world.mkv"
 
     # Camera video size in pixels (width,height)
+    #eye_size = (320,240)
+    #eye_size = (800,600)
     eye_size = (640,480)
     world_size = (1280,720)
 
