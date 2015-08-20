@@ -77,6 +77,7 @@ class Reference_Surface(object):
         self.m_to_screen = None
         self.m_from_screen = None
         self.camera_pose_3d = None
+        self.crop_region = None
 
         self.uid = str(time())
         self.real_world_size = {'x':1.,'y':1.}
@@ -159,7 +160,6 @@ class Reference_Surface(object):
         top_left_idx = np.argmin(distance_to_origin)
         hull = np.roll(hull,-top_left_idx,axis=0)
 
-
         #based on these 4 verts we calculate the transformations into a 0,0 1,1 square space
         self.m_to_screen = m_verts_to_screen(hull)
         self.m_from_screen = m_verts_from_screen(hull)
@@ -218,8 +218,8 @@ class Reference_Surface(object):
                 uv = np.array( [self.markers[i].uv_coords for i in overlap] )
                 yx.shape=(-1,1,2)
                 uv.shape=(-1,1,2)
-                # print 'uv',uv
-                # print 'yx',yx
+                #print 'uv',uv
+                #print 'yx',yx
                 self.m_to_screen,mask = cv2.findHomography(uv,yx)
                 self.m_from_screen = np.linalg.inv(self.m_to_screen)
                 #self.m_from_screen,mask = cv2.findHomography(yx,uv)
@@ -233,6 +233,9 @@ class Reference_Surface(object):
                     yx.shape = -1,2
                     yx *= img_size
                     yx.shape = -1, 1, 2
+
+                    print 'yx', yx
+                    print '----------'
                     # scale normalized object points to world space units (think m,cm,mm)
                     uv.shape = -1,2
                     uv *= [self.real_world_size['x'], self.real_world_size['y']]
@@ -356,11 +359,21 @@ class Reference_Surface(object):
             draw_polyline_norm(frame.reshape((5,2)),1,RGBA(1.0,0.2,0.6,alpha))
             draw_polyline_norm(hat.reshape((4,2)),1,RGBA(1.0,0.2,0.6,alpha))
 
+            #grid = frame.reshape((5,2))
+            # self.crop_region = np.array([
+            #     [grid[0][0] * img_size[1], grid[0][1] * img_size[0]],
+            #     [grid[1][0] * img_size[1], grid[1][1] * img_size[0]],
+            #     [grid[2][0] * img_size[1], grid[2][1] * img_size[0]],
+            #     [grid[3][0] * img_size[1], grid[3][1] * img_size[0]]],
+            #     dtype=np.float32)
+
             draw_points_norm(frame.reshape((5,-1))[0:1])
             text_anchor = frame.reshape((5,-1))[2]
             text_anchor[1] = 1-text_anchor[1]
             text_anchor *=img_size[1],img_size[0]
             self.glfont.draw_text(text_anchor[0],text_anchor[1],self.marker_status())
+
+
 
     def gl_draw_corners(self):
         """

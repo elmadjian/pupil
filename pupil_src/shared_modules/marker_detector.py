@@ -47,7 +47,7 @@ class Marker_Detector(Plugin):
 
         # all registered surfaces
         self.surface_definitions = Persistent_Dict(os.path.join(g_pool.user_dir,'surface_definitions') )
-        self.surfaces = [Reference_Surface(saved_definition=d) for d in  self.surface_definitions.get('realtime_square_marker_surfaces',[]) if isinstance(d,dict)]
+        self.surfaces = [Reference_Surface(saved_definition=d) for d in self.surface_definitions.get('realtime_square_marker_surfaces',[]) if isinstance(d,dict)]
 
         # edit surfaces
         self.edit_surfaces = []
@@ -71,6 +71,8 @@ class Marker_Detector(Plugin):
         self.menu= None
         self.button=  None
         self.add_button = None
+
+        self.screen = np.array([[0,0],[1280,0],[1280,720],[0,720]], dtype=np.float32)
 
 
 
@@ -215,6 +217,16 @@ class Marker_Detector(Plugin):
                     gp_on_s = tuple(s.img_to_ref_surface(np.array(p['norm_pos'])))
                     p['realtime gaze on ' + s.name] = gp_on_s
                     s.gaze_on_srf.append(gp_on_s)
+            #if s.crop_region is not None:
+                cv2.namedWindow("testinho")
+                verts = {m['id'] : m['centroid'] for m in self.markers}
+                if len(verts) == 4:
+                    ordered_verts = np.array([verts[42], verts[33], verts[32], verts[43]], dtype=np.float32)
+                    M = cv2.getPerspectiveTransform(ordered_verts, self.screen)
+                    newimg = cv2.warpPerspective(frame.img, M, (1280,720))
+                    newimg = newimg[:, 50:1230]
+                    cv2.imshow("testinho", newimg)
+                    cv2.waitKey(30)
 
 
     def get_init_dict(self):
