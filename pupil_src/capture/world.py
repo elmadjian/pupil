@@ -276,6 +276,8 @@ def world(g_pool,cap_src,cap_size):
     pupil_graph.update_rate = 5
     pupil_graph.label = "Confidence: %0.2f"
 
+    broadcast_img = None
+
     # Event loop
     while not g_pool.quit.value:
 
@@ -311,7 +313,13 @@ def world(g_pool,cap_src,cap_size):
 
         # allow each Plugin to do its work.
         for p in g_pool.plugins:
-            p.update(frame,events)
+            # if isinstance(p, Marker_Detector):
+            #     broadcast_img = p.update(frame, events)
+            # elif isinstance(p, Pupil_Server):
+            #     p.update(broadcast_img, events)
+            # else:
+            #     p.update(frame, events)
+            p.update(frame, events)
 
         #check if a plugin need to be destroyed
         g_pool.plugins.clean()

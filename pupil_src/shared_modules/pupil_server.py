@@ -28,7 +28,8 @@ class Pupil_Server(Plugin):
         super(Pupil_Server, self).__init__(g_pool)
         self.order = .9
         self.context = zmq.Context()
-        self.socket = self.context.socket(zmq.REP)
+        #self.socket = self.context.socket(zmq.REP)
+        self.socket = self.context.socket(zmq.PUB)
         self.address = ''
         self.set_server(address)
         self.menu = None
@@ -78,21 +79,21 @@ class Pupil_Server(Plugin):
             for key,value in p.iteritems():
                 if key not in self.exclude_list:
                     msg +=key+":"+str(value)+'\n'
-            #self.socket.send( msg )
+            self.socket.send( msg )
 
         for g in events.get('gaze_positions',[]):
             msg = "Gaze\n"
             for key,value in g.iteritems():
                 if key not in self.exclude_list:
                     msg +=key+":"+str(value)+'\n'
-            #self.socket.send( msg )
-        try:
-            msg = self.socket.recv(flags=zmq.NOBLOCK)
-            if msg.decode('utf-8') == 'gimme_scene_view\n':
-                img = cv2.imencode('.jpg', frame.img, [cv2.IMWRITE_JPEG_QUALITY, 90])[1]
-                self.socket.send(img.tostring())
-        except Exception as e:
-            pass#print "Could not wait on client", e
+            self.socket.send( msg )
+        # try:
+        #     msg = self.socket.recv(flags=zmq.NOBLOCK)
+        #     if msg.decode('utf-8') == 'gimme_scene_view\n' and frame is not None:
+        #         img = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 90])[1]
+        #         self.socket.send(img.tostring())
+        # except Exception as e:
+        #     pass #print "Could not wait on client", e
 
         # for e in events:
         #     msg = 'Event'+'\n'

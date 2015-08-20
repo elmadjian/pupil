@@ -217,16 +217,13 @@ class Marker_Detector(Plugin):
                     gp_on_s = tuple(s.img_to_ref_surface(np.array(p['norm_pos'])))
                     p['realtime gaze on ' + s.name] = gp_on_s
                     s.gaze_on_srf.append(gp_on_s)
-            #if s.crop_region is not None:
-                cv2.namedWindow("testinho")
-                verts = {m['id'] : m['centroid'] for m in self.markers}
-                if len(verts) == 4:
-                    ordered_verts = np.array([verts[42], verts[33], verts[32], verts[43]], dtype=np.float32)
-                    M = cv2.getPerspectiveTransform(ordered_verts, self.screen)
-                    newimg = cv2.warpPerspective(frame.img, M, (1280,720))
-                    newimg = newimg[:, 50:1230]
-                    cv2.imshow("testinho", newimg)
-                    cv2.waitKey(30)
+                # verts = {m['id'] : m['centroid'] for m in self.markers}
+                # if len(verts) == 4:
+                #     ordered_verts = np.array([verts[42], verts[33], verts[32], verts[43]], dtype=np.float32)
+                #     M = cv2.getPerspectiveTransform(ordered_verts, self.screen)
+                #     newimg = cv2.warpPerspective(frame.img, M, (1280,720))
+                #     newimg = newimg[:, 50:1230]
+                #     return newimg
 
 
     def get_init_dict(self):
